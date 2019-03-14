@@ -7,12 +7,9 @@ import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import ch.heigvd.res.labio.quotes.QuoteClient;
 import ch.heigvd.res.labio.quotes.Quote;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
+
+import java.io.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -28,6 +25,7 @@ public class Application implements IApplication {
    * to where the Java application is invoked.
    */
   public static String WORKSPACE_DIRECTORY = "./workspace/quotes";
+  public static String CHARSET_UTF8 = "utf-8";
   
   private static final Logger LOG = Logger.getLogger(Application.class.getName());
   
@@ -86,6 +84,10 @@ public class Application implements IApplication {
     QuoteClient client = new QuoteClient();
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
+
+      storeQuote(quote, "quote-" + Integer.toString(i) + ".utf8");
+
+
       /* There is a missing piece here!
        * As you can see, this method handles the first part of the lab. It uses the web service
        * client to fetch quotes. We have removed a single line from this method. It is a call to
@@ -125,7 +127,46 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+
+
+    //  creation variables pour construire le parcour
+    String workpath = WORKSPACE_DIRECTORY;
+    List<String> tagList = quote.getTags();
+
+    workpath += "/";
+
+    // on ajoute les tags  au parcours
+    for (String tag : tagList){
+
+        workpath += tag + "/";
+
+    }
+
+    workpath += filename;
+
+    // creation du fichier
+    File quoteFile = new File(workpath);
+    quoteFile.getParentFile().mkdirs();
+    boolean verifyExistance = quoteFile.createNewFile();
+
+
+    //if (verifyExistance){
+
+
+      // ajouter le quote dans le fichier
+      Writer writer = new OutputStreamWriter(new FileOutputStream(filename), CHARSET_UTF8);
+      writer.write(quote.getQuote());
+
+      // fermer correctement le fichier
+      writer.flush();
+      writer.close();
+
+     // } else {
+
+      //throw new Exception("Application - storeQuote: debug error file creation ");
+
+    //}
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
   
   /**
@@ -138,7 +179,7 @@ public class Application implements IApplication {
       @Override
       public void visit(File file) {
          try {
-          writer.write(file.getPath() +"/"+ file.getName());
+          writer.write(file.getPath() +"\n");
 
         } catch(IOException io) {
           System.err.println("Error of visit in Application Edo");
