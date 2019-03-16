@@ -21,7 +21,34 @@ public class Utils {
    */
   public static String[] getNextLine(String lines) {
 
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+      String[] nextTab = {"",""};
+      int flag = 0;
+
+      if (lines.contains("\r") || lines.contains("\n") || lines.contains("\r\n")) {
+
+          char[] charTab = lines.toCharArray();
+          for (int i = 0; i < charTab.length; i++) {
+
+              nextTab[flag] += charTab[i];
+
+              if (charTab[i] == '\n' || (charTab[i] == '\r' && (charTab[i + 1] != '\n') || i == charTab.length - 1)) {
+
+                  flag = 1;
+              }
+
+
+
+          }
+
+      } else {
+          nextTab[0] = "";
+          nextTab[1] = lines;
+
+      }
+
+
+    return nextTab;
+   // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }
