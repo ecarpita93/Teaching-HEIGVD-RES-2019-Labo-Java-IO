@@ -21,30 +21,32 @@ public class Utils {
    */
   public static String[] getNextLine(String lines) {
 
-      String[] nextTab = {"",""};
-      int flag = 0;
+      String[] nextTab = {"",""};   // initialized 2 element array to return
+      int flag = 0;                 // I use this flag to direct the chars to the first (0) or second (1) element of the array
 
-      if (lines.contains("\r") || lines.contains("\n") || lines.contains("\r\n")) {
+
+      // if the line contains at least one of the line separators (or both)
+      if (lines.contains("\r") || lines.contains("\n")) {
 
           char[] charTab = lines.toCharArray();
           for (int i = 0; i < charTab.length; i++) {
 
+              // the chars are directed to the first element
               nextTab[flag] += charTab[i];
 
               if (charTab[i] == '\n' || (charTab[i] == '\r' && (i == charTab.length - 1 || charTab[i + 1] != '\n'))) {
+                  // until we arrive to a line separator (or end of line)
                   flag = 1;
               }
           }
 
+      // if there are not separators
       } else {
           nextTab[0] = "";
           nextTab[1] = lines;
 
       }
-
-
     return nextTab;
-   // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }

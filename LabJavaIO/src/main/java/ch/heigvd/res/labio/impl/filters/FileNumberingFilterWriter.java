@@ -18,12 +18,12 @@ import java.util.logging.Logger;
 public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
-  private int lines;
-  boolean firstFlag;
-  boolean carriageFlag;
+  private int lines;   // used to print the line number
+  boolean firstFlag;   // as I used the char version of the write to do all the work I need a flag to
+                       // know when I first used the write for the current line
+  boolean carriageFlag;// same as before, I use this flag to check what follows a /r and act in consequence
 
   public FileNumberingFilterWriter(Writer out) {
-
     super(out);
     lines = 1;
     firstFlag = true;
@@ -37,7 +37,6 @@ public class FileNumberingFilterWriter extends FilterWriter {
     char[] strChar = str.toCharArray();
     write(strChar, off, len);
 
-   // throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
@@ -47,7 +46,6 @@ public class FileNumberingFilterWriter extends FilterWriter {
       write(cbuf[i]);
 
     }
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
@@ -59,10 +57,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
     }
 
 
-
-    // for every other execution, check the char to seek for special char like \n, \r or sequencd
+    // for every other execution, check the char to seek for special char like \n, \r or a sequence
+    // of them (with the help of carriageFlag)
     if (c == '\n') {
-
 
       if (carriageFlag) {
         out.write("\r\n" + ++lines + "\t");
@@ -71,36 +68,25 @@ public class FileNumberingFilterWriter extends FilterWriter {
         out.write("\n" + ++lines + "\t");
       }
 
-
     } else if (c == '\r') {
-
 
       if (carriageFlag) {
         carriageFlag = false;
-        // lines++;
         out.write("\r" + ++lines + "\t");
       } else {
         carriageFlag = true;
       }
 
-
     } else {
-
 
       if (carriageFlag) {
         out.write("\r" + ++lines + "\t" + (char) c);
         carriageFlag = false;
       } else {
         out.write((char) c);
-
       }
 
 
     }
   }
-
-
-  // throw new UnsupportedOperationException("The student has not implemented this method yet.");
-
-
 }
