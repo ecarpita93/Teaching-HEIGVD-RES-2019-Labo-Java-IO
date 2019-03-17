@@ -31,13 +31,9 @@ public class Utils {
 
               nextTab[flag] += charTab[i];
 
-              if (charTab[i] == '\n' || (charTab[i] == '\r' && (charTab[i + 1] != '\n') || i == charTab.length - 1)) {
-
+              if (charTab[i] == '\n' || (charTab[i] == '\r' && (i == charTab.length - 1 || charTab[i + 1] != '\n'))) {
                   flag = 1;
               }
-
-
-
           }
 
       } else {

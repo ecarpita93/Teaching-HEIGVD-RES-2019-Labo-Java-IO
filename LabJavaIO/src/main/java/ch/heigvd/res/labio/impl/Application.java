@@ -85,7 +85,7 @@ public class Application implements IApplication {
     for (int i = 0; i < numberOfQuotes; i++) {
       Quote quote = client.fetchQuote();
 
-      storeQuote(quote, "quote-" + Integer.toString(i) + ".utf8");
+      storeQuote(quote, "quote-" + i + ".utf8");
 
 
       /* There is a missing piece here!
@@ -130,43 +130,24 @@ public class Application implements IApplication {
 
 
     //  creation variables pour construire le parcour
-    String workpath = WORKSPACE_DIRECTORY;
-    List<String> tagList = quote.getTags();
-
-    workpath += "/";
+    String path = WORKSPACE_DIRECTORY;
 
     // on ajoute les tags  au parcours
-    for (String tag : tagList){
-
-        workpath += tag + "/";
-
+    for (String tag : quote.getTags()) {
+      path += "/" + tag;
     }
 
-    workpath += filename;
-
     // creation du fichier
-    File quoteFile = new File(workpath);
-    quoteFile.getParentFile().mkdirs();
-    boolean verifyExistance = quoteFile.createNewFile();
+    File file = new File(path);
+    file.mkdirs();
+    // ajouter le quote dans le fichier
+    Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path + "/" + filename), CHARSET_UTF8));
+    writer.write(quote.getQuote());
 
+    // fermer correctement le fichier
+    writer.flush();
+    writer.close();
 
-    //if (verifyExistance){
-
-
-      // ajouter le quote dans le fichier
-      Writer writer = new OutputStreamWriter(new FileOutputStream(filename), CHARSET_UTF8);
-      writer.write(quote.getQuote());
-
-      // fermer correctement le fichier
-      writer.flush();
-      writer.close();
-
-     // } else {
-
-      //throw new Exception("Application - storeQuote: debug error file creation ");
-
-    //}
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
   
   /**
