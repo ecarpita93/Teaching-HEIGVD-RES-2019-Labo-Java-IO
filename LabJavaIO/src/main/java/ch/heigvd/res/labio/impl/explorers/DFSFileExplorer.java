@@ -3,7 +3,8 @@ package ch.heigvd.res.labio.impl.explorers;
 import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.TreeSet;
 import java.util.Arrays;
 
 /**
@@ -19,25 +20,35 @@ public class DFSFileExplorer implements IFileExplorer {
   @Override
   public void explore(File rootDirectory, IFileVisitor visitor) {
 
+    TreeSet<File> folderToVisit = new TreeSet();
 
-    visitor.visit(rootDirectory);
-
+    // if File exists
     if (rootDirectory.exists()) {
-      ArrayList<File> filesOfRoot = new ArrayList<File>(Arrays.asList(rootDirectory.listFiles()));
-      ArrayList<File> folderToVisit = new ArrayList<File>();
 
-      for (File file : filesOfRoot) {
 
-        if (file.isDirectory()) {
+      // if File is a directory
+      if (rootDirectory.isDirectory()) {
+        visitor.visit(rootDirectory);
+
+
+        // we add it to the treeset (sorted)
+        for (File file : rootDirectory.listFiles()) {
           folderToVisit.add(file);
         }
+        // (we explore every directory before proceeding)
+        for (File file : folderToVisit) {
+          explore(file, visitor);
+        }
+
+      } else {
+        // if it's a File we apply the visit
+        visitor.visit(rootDirectory);
       }
 
-      for (File file : folderToVisit) {
-        explore(file, visitor);
-      }
+    // if noFile
+    } else {
+      visitor.visit(rootDirectory);
     }
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
 
   }
 
